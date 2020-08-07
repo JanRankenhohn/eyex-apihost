@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 using Tobii.Research;
+using static eyeX.Models.Globals.Constants;
 
 namespace eyeX.Models.Apis
 {
@@ -144,6 +145,7 @@ namespace eyeX.Models.Apis
                 // Converting Tobii Pro GazeData to EyeX GazeData Format
                 GazeData.GazeData gazeData = new GazeData.GazeData
                 {
+                    Type = nameof(GazeDataTypes.GAZEPOINTS),
                     PupilDiameter_Left = gazeDataEventArgs.LeftEye.Pupil.PupilDiameter,
                     PupilDiameter_Right = gazeDataEventArgs.RightEye.Pupil.PupilDiameter,
                     Timestamp = gazeDataEventArgs.SystemTimeStamp,

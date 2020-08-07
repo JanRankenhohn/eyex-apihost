@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Tobii.EyeX.Client;
 using Tobii.Interaction;
 using Tobii.Interaction.Framework;
+using static eyeX.Models.Globals.Constants;
 
 namespace eyeX.Models.Apis
 {
@@ -49,10 +50,12 @@ namespace eyeX.Models.Apis
                 // Converting Tobii Core GazeData to EyeX GazeData Format
                 GazeData.GazeData gazeData = new GazeData.GazeData
                 {
+                    Type = nameof(GazeDataTypes.GAZEPOINTS),
                     Timestamp = (long)ts,
-                    X_Median = x,
-                    Y_Median = y
+                    X_Median = x / 3840,
+                    Y_Median = y / 2160
                 };
+
 
                 GazeDataProcessor.ProcessGazeData(gazeData);
             }
@@ -69,6 +72,7 @@ namespace eyeX.Models.Apis
                 System.Drawing.Rectangle resolution = Screen.PrimaryScreen.Bounds;
                 GazeData.FixationData fixationData = new GazeData.FixationData
                 {
+                    Type = nameof(Globals.Constants.GazeDataTypes.FIXATIONS),
                     Timestamp = (long)fixation.Data.Timestamp,
                     X = (fixation.Data.X / 3840),
                     Y = (fixation.Data.Y / 2160),

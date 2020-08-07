@@ -6,31 +6,19 @@ using System.Threading.Tasks;
 using eyeX.Models.Apis;
 using eyeX.Models.Globals;
 using Microsoft.AspNetCore.Mvc;
+using static eyeX.Models.Globals.Constants;
 
 namespace eyeX.Controllers
 {
-    [Route("host/[controller]")]
+    [Route("api/[action]")]
     [ApiController]
     public class ApiController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult<string> Get()
-        {
-            if (true)
-            {
-                return "MoiN";
-            }
-            else
-            {
-                return "nope";
-            }
-        }
-
         /// <summary>
         /// Load the EyeTrackerApi by Client Call
         /// </summary>
         /// <returns></returns>
-        public async Task<ActionResult> LoadApi(string apiName) 
+        public async Task<ActionResult> LoadApi(string apiName)
         {
             var result = await ApiManager.InitializeApiAsync(apiName);
             if (result.Success)
@@ -76,12 +64,11 @@ namespace eyeX.Controllers
         /// </summary>
         /// <param name="ip"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
         public ActionResult Subscribe(string ip, int port, string name, string dataType)
         {
             // Create Client if it doesn't exist
             Client client = Globals.Clients.Where(c => c.Name == name).FirstOrDefault();
-            if (client != null)
+            if (client == null)
             {
                 client = new Client
                 {
@@ -91,16 +78,15 @@ namespace eyeX.Controllers
                     FixationDataSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
                 };
                 Globals.Clients.Add(client);
-                return Ok();
             }
 
             // Subscribe Client to data
             switch (dataType)
             {
-                case "gazepoints":
+                case nameof(GazeDataTypes.GAZEPOINTS):
                     client.GazeDataSocket.Connect(client.IPAddress);
                     break;
-                case "fixations":
+                case nameof(GazeDataTypes.FIXATIONS):
                     client.FixationDataSocket.Connect(client.IPAddress);
                     break;
             }

@@ -56,26 +56,19 @@ namespace eyeX.Models.GazeData
             {
                 // Valid Gaze data - serialize to json string for transmission
                 jsonString = JsonSerializer.Serialize(GazeData);
+
+                foreach (var client in Globals.Globals.Clients)
+                {
+                    if (client.GazeDataSocket.Connected)
+                    {
+                        // for performance, a new thread for each client
+                        Task.Run(() => sendJsonData(client.GazeDataSocket, jsonString));
+                    }
+                }
             }
             catch(Exception ex) {
-                // Validation failure, send unvalid GazeDataObject to Clients
-                jsonString = JsonSerializer.Serialize(new GazeData { 
-                    Type = "gazepoint",
-                    X_Left = 0,
-                    Y_Left = 0,
-                    GazePointValidity_Left = false,
-                    GazePointValidity_Right = false,
-                    PupilValidity_Left = false,
-                    PupilValidity_Right = false,
-                    Timestamp = GazeData.Timestamp
-                });
-            }
-
-            foreach (var client in Globals.Globals.Clients)
-            {
-                // for performance, a new thread for each client
-                Task.Run(() => sendJsonData(client.GazeDataSocket, jsonString));
-            }   
+                // No valid Gaze Point Data available
+            }  
         }
 
         /// <summary>
@@ -87,19 +80,15 @@ namespace eyeX.Models.GazeData
 
             try
             {
-                jsonString = JsonSerializer.Serialize(new FixationData
-                {
-                    Type = "fixation",
-                    X = FixationData.X,
-                    Y = FixationData.Y,
-                    EventType = FixationData.EventType,
-                    Timestamp = FixationData.Timestamp
-                });
+                jsonString = JsonSerializer.Serialize(FixationData);
 
                 foreach (var client in Globals.Globals.Clients)
                 {
-                    // for performance, a new thread for each client
-                    Task.Run(() => sendJsonData(client.FixationDataSocket, jsonString));
+                    if (client.FixationDataSocket.Connected)
+                    {
+                        // for performance, a new thread for each client
+                        Task.Run(() => sendJsonData(client.FixationDataSocket, jsonString));
+                    }
                 }
             }
             catch(Exception ex)
@@ -116,6 +105,7 @@ namespace eyeX.Models.GazeData
         {
             int toSendLen = System.Text.Encoding.ASCII.GetByteCount(json);
             byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(json);
+            Console.WriteLine(json);
             socket.Send(toSendBytes);
         }
 
