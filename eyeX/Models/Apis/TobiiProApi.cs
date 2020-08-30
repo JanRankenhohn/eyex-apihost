@@ -42,6 +42,7 @@ namespace eyeX.Models.Apis
             {
                 // Connection established
                 Logger.Debug("Connected to " + EyeTracker.DeviceName + " width IP " + IPAdress);
+                Console.WriteLine("Connected to " + EyeTracker.DeviceName + " width IP " + IPAdress);
                 SubscribeToGazeDataAsync();
                 IsConnected = true;
                 return new ApiResponseData { Success = true };
