@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 using Tobii.Research;
+using static eyeX.Models.Globals.Constants;
 
 namespace eyeX.Models.Apis
 {
@@ -42,6 +43,7 @@ namespace eyeX.Models.Apis
                 // Connection established
                 Logger.Debug("Connected to " + EyeTracker.DeviceName + " width IP " + IPAdress);
                 SubscribeToGazeDataAsync();
+                IsConnected = true;
                 return new ApiResponseData { Success = true };
             }
             else
@@ -144,6 +146,7 @@ namespace eyeX.Models.Apis
                 // Converting Tobii Pro GazeData to EyeX GazeData Format
                 GazeData.GazeData gazeData = new GazeData.GazeData
                 {
+                    Type = nameof(GazeDataTypes.GAZEPOINTS),
                     PupilDiameter_Left = gazeDataEventArgs.LeftEye.Pupil.PupilDiameter,
                     PupilDiameter_Right = gazeDataEventArgs.RightEye.Pupil.PupilDiameter,
                     Timestamp = gazeDataEventArgs.SystemTimeStamp,
@@ -153,6 +156,16 @@ namespace eyeX.Models.Apis
                     X_Right = gazeDataEventArgs.RightEye.GazePoint.PositionOnDisplayArea.X,
                 };
 
+                // Map 3D Eye Coordinates
+                var originR = gazeDataEventArgs.RightEye.GazeOrigin.PositionInTrackBoxCoordinates;
+                var originL = gazeDataEventArgs.LeftEye.GazeOrigin.PositionInTrackBoxCoordinates;
+                gazeData.GazeOrigin_X_Median = (originR.X + originL.X) / 2.0;
+                gazeData.GazeOrigin_Y_Median = (originR.Y + originL.Y) / 2.0;
+                gazeData.GazeOrigin_Y_Median = (originR.Z + originL.Z) / 2.0;
+                gazeData.X_3D_Median = gazeDataEventArgs.RightEye.GazePoint.PositionInUserCoordinates.X;
+                gazeData.Y_3D_Median = gazeDataEventArgs.RightEye.GazePoint.PositionInUserCoordinates.Y;
+                gazeData.Z_3D_Median = gazeDataEventArgs.RightEye.GazePoint.PositionInUserCoordinates.Z;
+
                 // Map Validity Values
                 gazeData.GazePointValidity_Left = gazeDataEventArgs.LeftEye.GazePoint.Validity == Validity.Valid ? true : false;
                 gazeData.GazePointValidity_Right = gazeDataEventArgs.RightEye.GazePoint.Validity == Validity.Valid ? true : false;
@@ -160,10 +173,14 @@ namespace eyeX.Models.Apis
                 gazeData.PupilValidity_Right = gazeDataEventArgs.RightEye.Pupil.Validity == Validity.Valid ? true : false;
 
                 // Compute Median Gaze Points
-                gazeData.Y_Median = (gazeData.Y_Left + gazeData.Y_Right) / 2.0;
-                gazeData.X_Median = (gazeData.X_Left + gazeData.X_Right) / 2.0;
+                gazeData.Y_Median = (gazeData.Y_Left + gazeData.Y_Right) / 2;
+                gazeData.X_Median = (gazeData.X_Left + gazeData.X_Right) / 2;
 
-                GazeDataProcessor.ProcessGazeData(gazeData);
+                if (!double.IsNaN(gazeData.X_Median))
+                {
+                    GazeDataProcessor.ProcessGazeData(gazeData);
+                    GazeDataProcessor.ProcessFixationData(null, gazeData);
+                }
             };
         }
     }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using eyeX.Properties;
 using System.Threading.Tasks;
+using eyeX.Models.Globals;
 
 namespace eyeX.Models.Apis
 {
@@ -14,25 +15,31 @@ namespace eyeX.Models.Apis
 
         public static async Task<ApiResponseData> InitializeApiAsync(string apiName)
         {
+            if(Api != null)
+            {
+                if (Api.IsConnected)
+                {
+                    return new ApiResponseData { Success = true, Message = "Api is already connected." };
+                }
+            }
             // Add any new API / Eye-Tracker Model here as new switch-case
             switch (apiName)
             {
-                case "TobiiCore":
+                case nameof(Constants.Apis.TOBIICORE):
                     Api = new TobiiCoreApi();
                     break;
-                case "TobiiPro":
+                case nameof(Constants.Apis.TOBIIPRO):
                     Api = new TobiiProApi();
                     break;
-                case "EyeLink":
+                case nameof(Constants.Apis.EYELINK):
                     Api = new EyeLinkApi(); // not yet implemented
                     break;
-                case "iViewXApi":
+                case nameof(Constants.Apis.IVIEWX):
                     Api = new IViewXApi(); // not yet implemented
                     break;
                 default:
                     throw new NotImplementedException("No implemented Connection for API " + Settings.Default.EyeTrackerApi);
             }
-
             return await Api.ConnectAsync();
         }
 

@@ -10,6 +10,7 @@ using static eyeX.Models.Globals.Constants;
 using System.Threading.Tasks;
 using eyeX.Models.Globals;
 using Tobii.Interaction;
+using eyeX.Models.Algorithms;
 
 namespace eyeX.Models.GazeData
 {
@@ -25,6 +26,7 @@ namespace eyeX.Models.GazeData
         public static void ProcessGazeData(GazeData gazeData)
         {
             GazeData = gazeData;
+            GazeData = WeightedMean.Compute(gazeData);
             SendGazeData();
         }
 
@@ -37,7 +39,7 @@ namespace eyeX.Models.GazeData
         {
             if(gazeData != null)
             {
-                ComputeFixationData(Settings.Default.FixationAlgorithm, gazeData);
+                FixationData = IDT.Classify(gazeData);
             }
             if(fixationData != null)
             {
@@ -56,26 +58,21 @@ namespace eyeX.Models.GazeData
             {
                 // Valid Gaze data - serialize to json string for transmission
                 jsonString = JsonSerializer.Serialize(GazeData);
+                // Fixed Length for output stream
+                jsonString = Utils.ToString615(jsonString);
+
+                foreach (var client in Globals.Globals.Clients)
+                {
+                    if (client.GazeDataSocket.Connected)
+                    {
+                        // for performance, a new thread for each client
+                        Task.Run(() => sendJsonData(client.GazeDataSocket, jsonString, client));
+                    }
+                }
             }
             catch(Exception ex) {
-                // Validation failure, send unvalid GazeDataObject to Clients
-                jsonString = JsonSerializer.Serialize(new GazeData { 
-                    Type = "gazepoint",
-                    X_Left = 0,
-                    Y_Left = 0,
-                    GazePointValidity_Left = false,
-                    GazePointValidity_Right = false,
-                    PupilValidity_Left = false,
-                    PupilValidity_Right = false,
-                    Timestamp = GazeData.Timestamp
-                });
-            }
-
-            foreach (var client in Globals.Globals.Clients)
-            {
-                // for performance, a new thread for each client
-                Task.Run(() => sendJsonData(client.GazeDataSocket, jsonString));
-            }   
+                // No valid Gaze Point Data available
+            }  
         }
 
         /// <summary>
@@ -87,24 +84,22 @@ namespace eyeX.Models.GazeData
 
             try
             {
-                jsonString = JsonSerializer.Serialize(new FixationData
-                {
-                    Type = "fixation",
-                    X = FixationData.X,
-                    Y = FixationData.Y,
-                    EventType = FixationData.EventType,
-                    Timestamp = FixationData.Timestamp
-                });
+                jsonString = JsonSerializer.Serialize(FixationData);
+
+                jsonString = Utils.ToString625(jsonString);
 
                 foreach (var client in Globals.Globals.Clients)
                 {
-                    // for performance, a new thread for each client
-                    Task.Run(() => sendJsonData(client.FixationDataSocket, jsonString));
+                    if (client.FixationDataSocket.Connected)
+                    {
+                        // for performance, a new thread for each client
+                        Task.Run(() => sendJsonData(client.FixationDataSocket, jsonString, client));
+                    }
                 }
             }
             catch(Exception ex)
             {
-
+                var m = ex.Message;
             }
         }
 
@@ -112,11 +107,27 @@ namespace eyeX.Models.GazeData
         /// Sends json Object to a Client Socket
         /// </summary>
         /// <param name="client"></param>
-        private static void sendJsonData(Socket socket, string json)
+        private static void sendJsonData(Socket socket, string json, Client client)
         {
             int toSendLen = System.Text.Encoding.ASCII.GetByteCount(json);
             byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(json);
-            socket.Send(toSendBytes);
+            Console.WriteLine(json);
+            try
+            {
+                socket.Send(toSendBytes);
+            }
+            catch(SocketException ex)
+            {
+                // Socket closed by remote client
+                socket.Dispose();
+                Globals.Globals.Clients.Remove(client);
+            }
+            catch (ObjectDisposedException ex)
+            {
+                // Socket closed by remote client
+                socket.Dispose();
+                Globals.Globals.Clients.Remove(client);
+            }
         }
 
         /// <summary>

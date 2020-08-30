@@ -25,7 +25,7 @@ namespace eyeX.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("TobiiCore")]
+        [global::System.Configuration.DefaultSettingValueAttribute("TOBIICORE")]
         public string EyeTrackerApi {
             get {
                 return ((string)(this["EyeTrackerApi"]));
@@ -43,10 +43,34 @@ namespace eyeX.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("default")]
+        [global::System.Configuration.DefaultSettingValueAttribute("IDT")]
         public string FixationAlgorithm {
             get {
                 return ((string)(this["FixationAlgorithm"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.06")]
+        public double IDT_Threshold {
+            get {
+                return ((double)(this["IDT_Threshold"]));
+            }
+            set {
+                this["IDT_Threshold"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int IDT_Window {
+            get {
+                return ((int)(this["IDT_Window"]));
+            }
+            set {
+                this["IDT_Window"] = value;
             }
         }
     }

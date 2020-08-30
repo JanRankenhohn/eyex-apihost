@@ -1,4 +1,5 @@
 ﻿using eyeX.Models.GazeData;
+using eyeX.Properties;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -9,6 +10,7 @@ using System.Windows.Forms;
 using Tobii.EyeX.Client;
 using Tobii.Interaction;
 using Tobii.Interaction.Framework;
+using static eyeX.Models.Globals.Constants;
 
 namespace eyeX.Models.Apis
 {
@@ -33,7 +35,7 @@ namespace eyeX.Models.Apis
 
             SubscribeToGazeDataAsync();
 
-            SubscribeToFixationDataAsync();
+            IsConnected = true;
 
             return new ApiResponseData { Success = true };
         }
@@ -49,12 +51,25 @@ namespace eyeX.Models.Apis
                 // Converting Tobii Core GazeData to EyeX GazeData Format
                 GazeData.GazeData gazeData = new GazeData.GazeData
                 {
+                    Type = nameof(GazeDataTypes.GAZEPOINTS),
                     Timestamp = (long)ts,
-                    X_Median = x,
-                    Y_Median = y
+                    X_Median = x / 3840,
+                    Y_Median = y / 2160
                 };
 
                 GazeDataProcessor.ProcessGazeData(gazeData);
+
+                switch (Settings.Default.FixationAlgorithm)
+                {
+                    // Use implemented IDT Algorithm
+                    case "IDT":
+                        GazeDataProcessor.ProcessFixationData(null, gazeData);
+                        break;
+                                            // Use Tobii Core Default Fixation Alogrithm
+                    default:
+                        SubscribeToFixationDataAsync();
+                        break;
+                }
             }
         }
 
@@ -69,12 +84,20 @@ namespace eyeX.Models.Apis
                 System.Drawing.Rectangle resolution = Screen.PrimaryScreen.Bounds;
                 GazeData.FixationData fixationData = new GazeData.FixationData
                 {
+                    Type = nameof(Globals.Constants.GazeDataTypes.FIXATIONS),
                     Timestamp = (long)fixation.Data.Timestamp,
-                    X = (fixation.Data.X / 3840),
-                    Y = (fixation.Data.Y / 2160),
-                    EventType =fixation.Data.EventType
+                    X_Median = (fixation.Data.X / 3840),
+                    Y_Median = (fixation.Data.Y / 2160),
+                    EventType = Enum.GetName(typeof(FixationDataEventType), fixation.Data.EventType).ToUpper()
                 };
-                GazeDataProcessor.ProcessFixationData(fixationData);
+                if (!double.IsNaN(fixation.Data.X))
+                {
+                    GazeDataProcessor.ProcessFixationData(fixationData);
+                }
+                //if (fixationData.EventType == FixationDataEventType.Begin)
+                //{
+                //    Globals.Globals.fixationCount += 1;
+                //}
             };
         }
 
