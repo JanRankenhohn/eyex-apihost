@@ -3,13 +3,19 @@
   <Profiles />
   <Settings>
     <Setting Name="EyeTrackerApi" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">TobiiCore</Value>
+      <Value Profile="(Default)">TOBIICORE</Value>
     </Setting>
     <Setting Name="EyeTrackerIP" Type="System.String" Scope="Application">
       <Value Profile="(Default)">169.254.5.233</Value>
     </Setting>
     <Setting Name="FixationAlgorithm" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">default</Value>
+      <Value Profile="(Default)">IDT</Value>
+    </Setting>
+    <Setting Name="IDT_Threshold" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.06</Value>
+    </Setting>
+    <Setting Name="IDT_Window" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
     </Setting>
   </Settings>
 </SettingsFile>

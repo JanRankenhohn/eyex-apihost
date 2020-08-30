@@ -10,6 +10,8 @@ namespace eyeX.Models.Apis
     public abstract class EyeTrackerApi : IEyeTrackerApi
     {
         protected static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+        public bool IsConnected = false;
         public virtual Task<ApiResponseData> ConnectAsync()
         {
             throw new NotImplementedException();

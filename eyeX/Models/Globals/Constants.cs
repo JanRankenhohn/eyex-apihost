@@ -10,6 +10,7 @@ namespace eyeX.Models.Globals
         public const string RightEye = "right";
         public const string LeftEye = "left";
         public enum Apis { TOBIICORE, TOBIIPRO, EYELINK, IVIEWX};
-        public enum GazeDataTypes { GAZEPOINTS, FIXATIONS };
+        public enum GazeDataTypes { GAZEPOINTS, FIXATIONS, SACCADES };
+        public enum FixationDetectionAlgorithms { IVT, IDT, DEFAULT };
     }
 }

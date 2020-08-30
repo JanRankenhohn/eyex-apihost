@@ -15,6 +15,13 @@ namespace eyeX.Models.Apis
 
         public static async Task<ApiResponseData> InitializeApiAsync(string apiName)
         {
+            if(Api != null)
+            {
+                if (Api.IsConnected)
+                {
+                    return new ApiResponseData { Success = true, Message = "Api is already connected." };
+                }
+            }
             // Add any new API / Eye-Tracker Model here as new switch-case
             switch (apiName)
             {
@@ -33,7 +40,6 @@ namespace eyeX.Models.Apis
                 default:
                     throw new NotImplementedException("No implemented Connection for API " + Settings.Default.EyeTrackerApi);
             }
-
             return await Api.ConnectAsync();
         }
 

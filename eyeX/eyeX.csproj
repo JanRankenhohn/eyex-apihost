@@ -336,6 +336,7 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
@@ -550,6 +551,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\ApiController.cs" />
+    <Compile Include="Models\Algorithms\IDT.cs" />
+    <Compile Include="Models\Algorithms\IDTData.cs" />
+    <Compile Include="Models\Algorithms\IVT.cs" />
+    <Compile Include="Models\Algorithms\WeightedMean.cs" />
     <Compile Include="Models\Apis\ApiResponseData.cs" />
     <Compile Include="Models\Apis\EyeLinkApi.cs" />
     <Compile Include="Models\Apis\EyeTrackerApi.cs" />
@@ -565,6 +570,7 @@
     <Compile Include="Models\GazeData\GazeDataProcessor.cs" />
     <Compile Include="Models\Globals\Constants.cs" />
     <Compile Include="Models\Globals\Globals.cs" />
+    <Compile Include="Models\Globals\Utils.cs" />
     <Compile Include="Models\GUI\CalibrationForm.cs">
       <SubType>Form</SubType>
     </Compile>

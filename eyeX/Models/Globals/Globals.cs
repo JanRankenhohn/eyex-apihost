@@ -9,6 +9,7 @@ namespace eyeX.Models.Globals
 {
     public static class Globals
     {
+        public static int fixationCount = 0;
         public static List<Client> Clients = new List<Client>();
     }
     public class Client

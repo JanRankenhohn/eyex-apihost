@@ -81,14 +81,21 @@ namespace eyeX.Controllers
             }
 
             // Subscribe Client to data
-            switch (dataType)
+            try
             {
-                case nameof(GazeDataTypes.GAZEPOINTS):
-                    client.GazeDataSocket.Connect(client.IPAddress);
-                    break;
-                case nameof(GazeDataTypes.FIXATIONS):
-                    client.FixationDataSocket.Connect(client.IPAddress);
-                    break;
+                switch (dataType)
+                {
+                    case nameof(GazeDataTypes.GAZEPOINTS):
+                        client.GazeDataSocket.Connect(client.IPAddress);
+                        break;
+                    case nameof(GazeDataTypes.FIXATIONS):
+                        client.FixationDataSocket.Connect(client.IPAddress);
+                        break;
+                }
+            }
+            catch(Exception e)
+            {
+                // already subscribed
             }
 
             return Ok();
