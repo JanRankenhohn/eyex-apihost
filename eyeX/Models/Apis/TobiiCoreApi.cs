@@ -32,6 +32,7 @@ namespace eyeX.Models.Apis
 
             // Connection established
             Logger.Debug("Connected to " + await Host.States.GetEyeTrackingDeviceStatusAsync());
+            Console.WriteLine("Connected to " + await Host.States.GetEyeTrackingDeviceStatusAsync());
 
             SubscribeToGazeDataAsync();
 

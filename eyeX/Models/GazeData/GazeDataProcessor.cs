@@ -121,12 +121,14 @@ namespace eyeX.Models.GazeData
                 // Socket closed by remote client
                 socket.Dispose();
                 Globals.Globals.Clients.Remove(client);
+                Console.WriteLine(client.IPAddress + " - Socket connection disposed.");
             }
             catch (ObjectDisposedException ex)
             {
                 // Socket closed by remote client
                 socket.Dispose();
                 Globals.Globals.Clients.Remove(client);
+                Console.WriteLine(client.IPAddress + " - Socket connection disposed.");
             }
         }
 

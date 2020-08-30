@@ -20,6 +20,7 @@ namespace eyeX.Controllers
         /// <returns></returns>
         public async Task<ActionResult> LoadApi(string apiName)
         {
+            Console.WriteLine(Request.Host.Host + " attempting to start intialization to " + apiName);
             var result = await ApiManager.InitializeApiAsync(apiName);
             if (result.Success)
             {
@@ -78,6 +79,7 @@ namespace eyeX.Controllers
                     FixationDataSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
                 };
                 Globals.Clients.Add(client);
+                Console.WriteLine(ip + ":" + port + " - Socket connection established");
             }
 
             // Subscribe Client to data
