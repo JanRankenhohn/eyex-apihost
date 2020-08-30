@@ -16,7 +16,7 @@ Provides an interface for Client libraries to
 ## Usage
 - Simple .exe Console/Forms Application (see release)
 - Tobii EyeTracker has to be connected and calibrated first
-- Runs on port 5000 - mmake sure it is not used by any other process
+- Runs on port 5000 - make sure it is not used by any other process
 
 ## Client Libraries
 - IntelliJ: https://github.com/JanRankenhohn/eyex-apihost
