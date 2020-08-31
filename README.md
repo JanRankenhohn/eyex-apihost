@@ -19,7 +19,7 @@ Provides an interface for Client libraries to
 - Runs on port 5000 - make sure it is not used by any other process
 
 ## Client Libraries
-- IntelliJ: https://github.com/JanRankenhohn/eyex-apihost
+- IntelliJ: https://github.com/JanRankenhohn/eyex-lib
 
 
 [1] Dario D. Salvucci and Joseph H. Goldberg. 2000. Identifying fixations and saccades in eye-tracking protocols. In Proceedings of the 2000 symposium on Eye tracking research & applications (ETRA '00). Association for Computing Machinery, New York, NY, USA, 71–78. DOI:https://doi.org/10.1145/355017.355028
