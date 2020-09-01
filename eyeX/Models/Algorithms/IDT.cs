@@ -61,7 +61,7 @@ namespace eyeX.Models.Algorithms
                     fixationData.Y_Median = YValueList.Average();
                 }
             }
-            Console.WriteLine(counter);
+            //Console.WriteLine(counter);
             PreviousFixationData = fixationData;
             return fixationData;
         }
