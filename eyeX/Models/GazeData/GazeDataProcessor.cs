@@ -111,7 +111,7 @@ namespace eyeX.Models.GazeData
         {
             int toSendLen = System.Text.Encoding.ASCII.GetByteCount(json);
             byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(json);
-            Console.WriteLine(json);
+            //Console.WriteLine(json);
             try
             {
                 socket.Send(toSendBytes);
